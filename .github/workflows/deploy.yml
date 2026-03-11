@@ -1,37 +1,31 @@
-name: Deploy
+name: Deploy para DigitalOcean
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main       # Dispara ao fazer push na main
 
 jobs:
-
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
+      - name: Configurar chave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-
-          script: |
-            cd /home/deploy/app || git clone https://github.com/USER/REPO app
-            cd app
-
-            git pull
-
-            docker build -t myapp .
-
-            docker stop myapp || true
-            docker rm myapp || true
-
-            docker run -d \
-              -p 80:80 \
-              --name myapp \
-              myapp
+      - name: Sincronizar arquivos via rsync
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/personalizedproducts.app/html/ \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='README.md'
