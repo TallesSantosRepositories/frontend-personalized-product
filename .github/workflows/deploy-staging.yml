@@ -16,9 +16,9 @@ jobs:
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/deploy_key
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          echo "Host ${{ secrets.STAGING_HOST }}" >> ~/.ssh/config
+          echo "Host ${{ secrets.HOST }}" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  IdentityFile ~/.ssh/deploy_key" >> ~/.ssh/config
 
@@ -26,12 +26,12 @@ jobs:
         run: |
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
-            ./ root@${{ secrets.STAGING_HOST }}:/app/staging/ \
+            ./ root@${{ secrets.HOST }}:/app/staging/ \
             --exclude='.git' --exclude='node_modules'
 
       - name: Build e restart Docker
         run: |
-          ssh -i ~/.ssh/deploy_key root@${{ secrets.STAGING_HOST }} "
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.HOST }} "
             cd /app/staging &&
             docker build -t app-staging . &&
             docker stop app-staging 2>/dev/null || true &&
