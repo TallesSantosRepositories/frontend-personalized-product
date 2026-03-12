@@ -1,0 +1,42 @@
+name: Deploy Prod
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ProdDigitalOceanEnvs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "Host ${{ secrets.HOST }}" >> ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/deploy_key" >> ~/.ssh/config
+
+      - name: Copiar arquivos para o servidor
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./ root@${{ secrets.HOST }}:/app/prod/ \
+            --exclude='.git' --exclude='node_modules'
+
+      - name: Build e restart Docker
+        run: |
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.HOST }} "
+            cd /app/prod &&
+            docker build -t app-prod . &&
+            docker stop app-prod 2>/dev/null || true &&
+            docker rm app-prod 2>/dev/null || true &&
+            docker run -d --name app-prod \
+              --restart unless-stopped \
+              -p 3000:80 app-prod
+          "
