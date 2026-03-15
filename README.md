@@ -1,73 +1,31 @@
-# React + TypeScript + Vite
+# Personalized Products — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto tem o intuito de ser a porta de entrada dos usuario que forem acessar o site de venda de produtos personalizados.  
+Atualmente o projeto só contemplara canecas personalizadas, mas futuramente a ideia é expandir para copos stanley e até artigos de roupas personalizados.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Rodando localmente
 
-## React Compiler
+Para rodar localmente o projeto,
+ - clonar o repositorio
+ - dentro da raiz do projeto, baixar as dependencias: npm i
+ - apontar o variavel `apiBaseUrl` para a api rodando localmente, ou para a de ambiente de homologação:
+    - `https://staging.personalizedproducts/internal/api`
+    - `http://staging.personalizedproducts/internal/api` *(devera ser configurado o acesso ao https, neste caso contatar o devops responsavel)*
+- npm run dev para subir o servidor localmente
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Consensos do projeto
 
-## Expanding the ESLint configuration
+Os commits que entrarem na branch `developer` automativamente dispararão uma esteira que subira para o ambiente de staging na nuvem. Então para que seja possivel o rastreio de features e etc, devera ser implementado a solução com os seguintes padrões:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `feature/[n° do card]/[descrição da branch caso queira]` — Esta branch devera ser guardada e estar atualizada com a main para o deploy na esteira para produção
+- `merge/feature/[n° do card]/[descrição da branch caso queira]` — Esta branch é a que ira para developer, e devera ser solicitado MR para branch developer, e ter no mínimo uma aprovação para de fato ir para developer e trigar a esteira
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+O deploy para produção sera feito pelo devops responsavel todo final de semana.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+> **Obs:** Esta primeira versão do README não possui informações de fato do projeto, somente explicação do processo a ser seguido.  
+> Documentação e melhorias serão responsabilidade dos programadores que implementarem as features.
