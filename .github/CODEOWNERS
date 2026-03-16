@@ -1,0 +1,16 @@
+# CODEOWNERS
+# Qualquer alteração requer aprovação do time de DevOps
+
+# Regra global — tudo no repositório
+* @TallesSantosRepositories/devops-prod-team
+
+# CI/CD
+.github/                          @TallesSantosRepositories/devops-prod-team
+
+# Docker e infraestrutura
+Dockerfile                        @TallesSantosRepositories/devops-prod-team
+docker-compose.yml                @TallesSantosRepositories/devops-prod-team
+nginx.conf                        @TallesSantosRepositories/devops-prod-team
+
+# Configurações sensíveis
+*.env*                            @TallesSantosRepositories/devops-prod-team
