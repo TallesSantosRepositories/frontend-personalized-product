@@ -56,7 +56,7 @@ export default function ImageGallery() {
                         <img
                             key={index}
                             ref={isLast ? lastImageRef : null}
-                            src={`/${normalizeImagePath(image.fullPath)}`
+                            src={`/public/${normalizeImagePath(image.fullPath)}`
                             } // ajuste o campo conforme seu DTO
                             alt={image.description || image.fileName}
                             style={{ width: "100%", marginBottom: "8px", borderRadius: "8px" }}
