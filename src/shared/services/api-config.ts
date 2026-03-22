@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://staging.personalizedproducts.app:8080'
+export const BASE_URL = 'https://staging.personalizedproducts.app/internal/api'
