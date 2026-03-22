@@ -1,0 +1,1 @@
+export const BASE_URL = 'http://staging.personalizedproducts.app:8080'
